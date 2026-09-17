@@ -24,16 +24,22 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     const fetchUser = async () => {
+      if (import.meta.env.DEV) console.log("Auth initialization started");
       try {
         const token = localStorage.getItem("expense_tracker_token");
         if (token) {
+          if (import.meta.env.DEV) console.log("Token found");
           const userData = await AuthService.getCurrentUser();
           setUser(userData);
+          if (import.meta.env.DEV) console.log("/auth/me success");
           
           const storedPhoto = localStorage.getItem(`profile_photo_${userData.id}`);
           if (storedPhoto) setProfilePhotoState(storedPhoto);
+        } else {
+          if (import.meta.env.DEV) console.log("Token not found");
         }
       } catch (err) {
+        if (import.meta.env.DEV) console.log("/auth/me failure");
         console.error("Failed to load user", err);
       } finally {
         setLoading(false);

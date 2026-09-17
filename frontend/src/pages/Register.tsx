@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import api from "../services/api";
+import { useAuth } from "../context/AuthContext";
 
 const Register = () => {
   const [name, setName] = useState("");
@@ -11,6 +12,13 @@ const Register = () => {
   const [error, setError] = useState<string | null>(null);
   
   const navigate = useNavigate();
+  const { user, loading: authLoading } = useAuth();
+
+  useEffect(() => {
+    if (!authLoading && user) {
+      navigate("/dashboard", { replace: true });
+    }
+  }, [user, authLoading, navigate]);
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();

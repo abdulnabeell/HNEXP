@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useAuth } from "../../context/AuthContext";
 import { Outlet, Navigate } from "react-router-dom";
 import Sidebar from "./Sidebar";
 import Header from "./Header";
@@ -7,7 +8,7 @@ import BottomNav from "./BottomNav";
 const AppLayout = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isOnline, setIsOnline] = useState(navigator.onLine);
-  const token = localStorage.getItem("expense_tracker_token");
+  const { user, loading } = useAuth();
 
   useEffect(() => {
     const handleOnline = () => setIsOnline(true);
@@ -22,7 +23,15 @@ const AppLayout = () => {
     };
   }, []);
 
-  if (!token) {
+  if (loading) {
+    return (
+      <div style={{ display: 'flex', height: '100vh', alignItems: 'center', justifyContent: 'center', backgroundColor: 'var(--color-bg)' }}>
+        <div style={{ color: 'var(--color-text-secondary)' }}>Loading HNEXP...</div>
+      </div>
+    );
+  }
+
+  if (!user) {
     return <Navigate to="/login" replace />;
   }
 
